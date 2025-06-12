@@ -10,7 +10,8 @@ func (app *Application) routues(handler handlers.Handler) {
 	{
 		publicRoute.POST("/register", handler.RegisterHandler)
 		publicRoute.POST("/login", handler.LoginHandler)
-
+		publicRoute.POST("/forgot-password", handler.ForgotPasswordHandler)
+		publicRoute.POST("/reset-password", handler.ResetPasswordHandler)
 	}
 
 	profileRoute := apiGroup.Group("/profile", app.appMiddleware.AuthenticateMiddleware)
