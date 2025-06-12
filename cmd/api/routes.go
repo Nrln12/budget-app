@@ -5,8 +5,8 @@ import (
 )
 
 func (app *Application) routues(handler handlers.Handler) {
-	apiGroup := app.server.Group("/v1/users")
-	publicRoute := apiGroup.Group("/public")
+	apiGroup := app.server.Group("/v1")
+	publicRoute := apiGroup.Group("/users/public")
 	{
 		publicRoute.POST("/register", handler.RegisterHandler)
 		publicRoute.POST("/login", handler.LoginHandler)
@@ -18,6 +18,13 @@ func (app *Application) routues(handler handlers.Handler) {
 	{
 		profileRoute.GET("/authenticated/user", handler.GetAuthenticatedUserHandler)
 		profileRoute.PATCH("/change-password", handler.ChangePasswordHandler)
+	}
+
+	categoryRoute := apiGroup.Group("/categories", app.appMiddleware.AuthenticateMiddleware)
+	{
+		categoryRoute.GET("", handler.GetCategories)
+		categoryRoute.POST("", handler.CreateCategory)
+		categoryRoute.DELETE("/:id", handler.DeleteCategory)
 	}
 	app.server.GET("/", handler.HealthCheck)
 }

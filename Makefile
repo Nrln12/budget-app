@@ -31,8 +31,8 @@ migrate:
 .PHONY: seeder
 seeder:
 ifdef FILENAME
-	echo "Seedinng : $(FILENAME).go"
-	go run "./internal/database/seeders/$(FILENAME)_seeder.go"
+	echo "Seeding : $(FILENAME).go"
+	go run "./internal/database/seeder/$(FILENAME)_seeder.go"
 else
 	echo "Error: FILENAME is not specified. Please provide the filename using 'make seeder FILENAME=<filename>'"
 	exit 1
