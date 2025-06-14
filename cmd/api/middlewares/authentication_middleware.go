@@ -33,7 +33,7 @@ func (appMiddleware *AppMiddleware) AuthenticateMiddleware(next echo.HandlerFunc
 			return common.SendUnauthorizedResponse(c, "Token expired")
 		}
 		var user model.User
-		result := appMiddleware.Db.First(&user, claims.ID)
+		result := appMiddleware.Db.First(&user, claims.Id)
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return common.SendUnauthorizedResponse(c, "Invalid token")
 		}

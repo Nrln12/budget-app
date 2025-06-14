@@ -7,6 +7,7 @@ import (
 	"budget-app/internal/model"
 	"errors"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"strings"
 )
 
@@ -66,4 +67,30 @@ func (categoryService *CategoryService) DeleteById(id uint) error {
 	}
 	categoryService.Db.Delete(category)
 	return nil
+}
+
+func (c CategoryService) AssociateUserToCategories(user *model.User, categories []*model.Category) error {
+	if user != nil && categories != nil && len(categories) > 0 {
+		var userCategories []*model.UserCategory
+		for _, category := range categories {
+			userCategories = append(userCategories, &model.UserCategory{
+				UserId:     user.ID,
+				CategoryId: category.ID,
+			})
+		}
+		result := c.Db.Clauses(clause.OnConflict{DoNothing: true}).Create(userCategories)
+		if result.Error != nil {
+			return result.Error
+		}
+	}
+	return nil
+}
+
+func (c CategoryService) GetMultipleCategories(categoryIds []uint) ([]*model.Category, error) {
+	var categories []*model.Category
+	result := c.Db.Where("id in ?", categoryIds).Find(&categories)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return categories, nil
 }

@@ -25,6 +25,17 @@ func (app *Application) routues(handler handlers.Handler) {
 		categoryRoute.GET("", handler.GetCategories)
 		categoryRoute.POST("", handler.CreateCategory)
 		categoryRoute.DELETE("/:id", handler.DeleteCategory)
+		categoryRoute.POST("/associate-user-to-categories", handler.AssociateUserToCategories)
+		categoryRoute.GET("/user", handler.GetUserCategories)
+		categoryRoute.POST("/user/custom-category", handler.CreateCustomUserCategory)
+	}
+
+	budgetRoute := apiGroup.Group("/budget", app.appMiddleware.AuthenticateMiddleware)
+	{
+		budgetRoute.POST("", handler.CreateBudget)
+		budgetRoute.GET("", handler.GetBudget)
+		budgetRoute.PUT("/:id", handler.UpdateBudget)
+		budgetRoute.DELETE("/:id", handler.DeleteBudget)
 	}
 	app.server.GET("/", handler.HealthCheck)
 }
